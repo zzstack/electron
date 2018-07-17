@@ -1012,11 +1012,6 @@ describe('<webview> tag', function () {
       webview.addEventListener('found-in-page', listener)
       webview.addEventListener('did-finish-load', listener2)
       loadWebView(webview, {src: `file://${fixtures}/pages/content.html`})
-      // TODO(deepak1556): With https://codereview.chromium.org/2836973002
-      // focus of the webContents is required when triggering the api.
-      // Remove this workaround after determining the cause for
-      // incorrect focus.
-      webview.focus()
     })
   })
 
