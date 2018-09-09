@@ -233,6 +233,7 @@ void Tray::BuildPrototype(v8::Isolate* isolate,
       .SetMethod("getIgnoreDoubleClickEvents",
                  &Tray::GetIgnoreDoubleClickEvents)
       .SetMethod("displayBalloon", &Tray::DisplayBalloon)
+      .SetMethod("focus", &Tray::Focus)
       .SetMethod("popUpContextMenu", &Tray::PopUpContextMenu)
       .SetMethod("setContextMenu", &Tray::SetContextMenu)
       .SetMethod("getBounds", &Tray::GetBounds);

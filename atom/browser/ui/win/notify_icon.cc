@@ -126,6 +126,15 @@ void NotifyIcon::DisplayBalloon(HICON icon,
     LOG(WARNING) << "Unable to create status tray balloon.";
 }
 
+void NotifyIcon::Focus() {
+  NOTIFYICONDATA icon_data;
+  InitIconData(&icon_data);
+
+  BOOL result = Shell_NotifyIcon(NIM_SETFOCUS, &icon_data);
+  if (!result)
+    LOG(WARNING) << "Unable to focus the taskbar notification area.";
+}
+
 void NotifyIcon::PopUpContextMenu(const gfx::Point& pos,
                                   AtomMenuModel* menu_model) {
   // Returns if context menu isn't set.
