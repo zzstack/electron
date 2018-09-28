@@ -525,7 +525,7 @@ describe('remote module', () => {
       w = new BrowserWindow({
         show: false,
         webPreferences: {
-          preload: preload
+          preload
         }
       })
       w.once('closed', () => done())

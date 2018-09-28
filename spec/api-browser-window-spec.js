@@ -61,7 +61,7 @@ describe('BrowserWindow module', () => {
       },
       {
         type: 'file',
-        filePath: filePath,
+        filePath,
         offset: 0,
         length: fileStats.size,
         modificationTime: fileStats.mtime.getTime() / 1000
@@ -292,7 +292,7 @@ describe('BrowserWindow module', () => {
 
       it('supports specifying POST data', (done) => {
         w.webContents.on('did-finish-load', () => done())
-        w.loadURL(server.url, { postData: postData })
+        w.loadURL(server.url, { postData })
       })
       it('sets the content type header on URL encoded forms', (done) => {
         w.webContents.on('did-finish-load', () => {
@@ -1285,7 +1285,7 @@ describe('BrowserWindow module', () => {
         w = new BrowserWindow({
           show: false,
           webPreferences: {
-            preload: preload
+            preload
           }
         })
         w.loadFile(path.join(fixtures, 'api', 'preload.html'))
@@ -1300,7 +1300,7 @@ describe('BrowserWindow module', () => {
         w = new BrowserWindow({
           show: false,
           webPreferences: {
-            preload: preload
+            preload
           }
         })
         w.loadFile(path.join(fixtures, 'api', 'preload.html'))
@@ -1310,7 +1310,7 @@ describe('BrowserWindow module', () => {
         const w = await openTheWindow({
           show: false,
           webPreferences: {
-            preload: preload
+            preload
           }
         })
         const p = emittedOnce(ipcMain, 'answer')
@@ -1371,7 +1371,7 @@ describe('BrowserWindow module', () => {
         w = new BrowserWindow({
           show: false,
           webPreferences: {
-            preload: preload,
+            preload,
             additionalArguments: ['--my-magic-arg']
           }
         })
@@ -1388,7 +1388,7 @@ describe('BrowserWindow module', () => {
         w = new BrowserWindow({
           show: false,
           webPreferences: {
-            preload: preload,
+            preload,
             additionalArguments: ['--my-magic-arg=foo']
           }
         })
@@ -1408,7 +1408,7 @@ describe('BrowserWindow module', () => {
         w = new BrowserWindow({
           show: false,
           webPreferences: {
-            preload: preload,
+            preload,
             nodeIntegration: false
           }
         })
@@ -1503,7 +1503,7 @@ describe('BrowserWindow module', () => {
           show: false,
           webPreferences: {
             sandbox: true,
-            preload: preload
+            preload
           }
         })
         w.loadFile(path.join(fixtures, 'api', 'preload.html'))
@@ -1532,7 +1532,7 @@ describe('BrowserWindow module', () => {
           show: false,
           webPreferences: {
             sandbox: true,
-            preload: preload
+            preload
           }
         })
         const htmlPath = path.join(fixtures, 'api', 'sandbox.html?exit-event')
@@ -1554,7 +1554,7 @@ describe('BrowserWindow module', () => {
           show: false,
           webPreferences: {
             sandbox: true,
-            preload: preload
+            preload
           }
         })
         ipcRenderer.send('set-web-preferences-on-next-new-window', w.webContents.id, 'preload', preload)
@@ -1661,7 +1661,7 @@ describe('BrowserWindow module', () => {
           show: false,
           webPreferences: {
             sandbox: true,
-            preload: preload
+            preload
           }
         })
         ipcRenderer.send('set-web-preferences-on-next-new-window', w.webContents.id, 'preload', preload)
@@ -1746,7 +1746,7 @@ describe('BrowserWindow module', () => {
         w = new BrowserWindow({
           show: false,
           webPreferences: {
-            preload: preload,
+            preload,
             sandbox: true
           }
         })
@@ -1769,7 +1769,7 @@ describe('BrowserWindow module', () => {
         w = new BrowserWindow({
           show: false,
           webPreferences: {
-            preload: preload,
+            preload,
             sandbox: true
           }
         })
@@ -1802,7 +1802,7 @@ describe('BrowserWindow module', () => {
         w = new BrowserWindow({
           show: false,
           webPreferences: {
-            preload: preload,
+            preload,
             sandbox: true
           }
         })
@@ -1851,7 +1851,7 @@ describe('BrowserWindow module', () => {
           show: false,
           webPreferences: {
             sandbox: true,
-            preload: preload
+            preload
           }
         })
         w.loadFile(path.join(fixtures, 'api', 'preload.html'))
@@ -1863,7 +1863,7 @@ describe('BrowserWindow module', () => {
           show: false,
           webPreferences: {
             sandbox: true,
-            preload: preload,
+            preload,
             webviewTag: true
           }
         })
@@ -2823,7 +2823,7 @@ describe('BrowserWindow module', () => {
       it('can be changed with hasShadow option', () => {
         w.destroy()
         const hasShadow = process.platform !== 'darwin'
-        w = new BrowserWindow({ show: false, hasShadow: hasShadow })
+        w = new BrowserWindow({ show: false, hasShadow })
         assert.strictEqual(w.hasShadow(), hasShadow)
       })
 

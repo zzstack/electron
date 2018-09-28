@@ -131,7 +131,7 @@ describe('session module', () => {
 
     it('should remove cookies', (done) => {
       session.defaultSession.cookies.set({
-        url: url,
+        url,
         name: '2',
         value: '2'
       }, (error) => {
@@ -192,7 +192,7 @@ describe('session module', () => {
       })
 
       cookies.set({
-        url: url,
+        url,
         name: 'foo',
         value: 'bar'
       }, (error) => {
@@ -203,7 +203,7 @@ describe('session module', () => {
     describe('ses.cookies.flushStore(callback)', () => {
       it('flushes the cookies to disk and invokes the callback when done', (done) => {
         session.defaultSession.cookies.set({
-          url: url,
+          url,
           name: 'foo',
           value: 'bar'
         }, (error) => {
@@ -764,12 +764,12 @@ describe('session module', () => {
           if (state === 'cancelled') {
             const options = {
               path: savePath,
-              urlChain: urlChain,
-              mimeType: mimeType,
+              urlChain,
+              mimeType,
               offset: receivedBytes,
               length: totalBytes,
               lastModified: lastModifiedTime,
-              eTag: eTag
+              eTag
             }
             ipcRenderer.sendSync('set-download-option', false, false, downloadFilePath)
             w.webContents.session.createInterruptedDownload(options)
