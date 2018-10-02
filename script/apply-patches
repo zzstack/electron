@@ -6,7 +6,7 @@ import subprocess
 import sys
 
 from lib import git
-from lib.patches import PatchesConfig
+from lib.patches import PatchesList
 
 
 SOURCE_ROOT = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
@@ -34,15 +34,13 @@ def main():
 
 def apply_patches_for_dir(directory, project_root, commit):
   for root, dirs, files in os.walk(directory):
-    config = PatchesConfig.from_directory(root, project_root=project_root)
-    patches_list = config.get_patches_list()
+    patches_list = PatchesList.from_directory(root, project_root=project_root)
     if patches_list is None:
       continue
 
-    (success, failed_patches) = patches_list.apply(commit=commit)
+    (success, failed_patch) = patches_list.apply(commit=commit)
     if not success:
-      patch_path = failed_patches[0].get_file_path()
-      return '{0} failed to apply'.format(os.path.basename(patch_path))
+      return '{0} failed to apply'.format(failed_patch)
 
 
 def parse_args():

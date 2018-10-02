@@ -43,6 +43,10 @@ def get_repo_root(path):
 
 
 def apply_patch(repo, patch_path, directory=None, index=False, reverse=False):
+  return apply_patches(repo, [patch_path], directory=directory, index=index,
+      reverse=reverse)
+
+def apply_patches(repo, patch_paths, directory=None, index=False, reverse=False):
   args = ['git', 'apply',
           '--ignore-space-change',
           '--ignore-whitespace',
@@ -54,8 +58,23 @@ def apply_patch(repo, patch_path, directory=None, index=False, reverse=False):
     args += ['--index']
   if reverse:
     args += ['--reverse']
-  args += ['--', patch_path]
+  args += ['--'] + patch_paths
 
+  with scoped_cwd(repo):
+    return_code = subprocess.call(args)
+    applied_successfully = (return_code == 0)
+    return applied_successfully
+
+
+def am(repo, patches):
+  args = [
+    'git',
+    'am',
+    '--3way',
+    '--ignore-space-change',
+    '--whitespace=fix',
+    '--',
+  ] + patches
   with scoped_cwd(repo):
     return_code = subprocess.call(args)
     applied_successfully = (return_code == 0)
