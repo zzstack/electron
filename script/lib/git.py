@@ -98,7 +98,8 @@ def commit(repo, author, message):
 
   args = ['git', 'commit',
           '--author', author,
-          '--message', message
+          '--message', message,
+          '--untracked-files=no',
           ]
 
   with scoped_cwd(repo):

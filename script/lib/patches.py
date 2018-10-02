@@ -48,6 +48,7 @@ class Patch:
     if reverse:
       message = 'Revert: ' + message
 
+    message += '\n\nPatch-Filename: {}'.format(os.path.basename(self.file_path))
     return message
 
   def reverse(self):
@@ -79,7 +80,7 @@ class PatchesList:
       # Instead of it we are going only to add all changes to the index
       # and commit them all at once later.
       applied_successfully = patch.apply(reverse=reverse, index=commit,
-                                         commit=False)
+                                         commit=commit)
 
       if not applied_successfully:
         all_patches_applied = False

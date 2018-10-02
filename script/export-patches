@@ -1,0 +1,76 @@
+#!/usr/bin/env python
+
+import os
+import subprocess
+import re
+
+from lib.util import scoped_cwd
+
+def get_base_tag(repo):
+  args = [
+    'git',
+    'describe',
+    '--tags',
+  ]
+  with scoped_cwd(repo):
+    return subprocess.check_output(args).split('-')[0]
+
+def format_patch(repo, base):
+  args = [
+    'git',
+    'format-patch',
+    '-Nkp',
+    '--stdout',
+    base
+  ]
+  with scoped_cwd(repo):
+    return subprocess.check_output(args)
+
+def split_patches(patch_data):
+  patches = []
+  patch_start = re.compile('^From [0-9a-f]+ ')
+  for line in patch_data.splitlines():
+    if patch_start.match(line):
+      patches.append('')
+    patches[-1] += line + '\n'
+  return patches
+
+def munge_subject_to_filename(subject):
+  return re.sub(r'[^A-Za-z0-9]+', '_', subject).strip('_').lower()
+
+def get_file_name(patch):
+  for line in patch.splitlines():
+    if line.startswith('Patch-Filename: '):
+      return line[len('Patch-Filename: '):]
+  # If no Patch-Filename, use the subject.
+  for line in patch.splitlines():
+    if line.startswith('Subject: '):
+      return munge_subject_to_filename(line[len('Subject: '):])
+
+def main():
+  repo = '.'
+  base_tag = get_base_tag(repo)
+  print("Base tag: {}".format(base_tag))
+  patch_data = format_patch(repo, base_tag)
+  patches = split_patches(patch_data)
+  out_dir = 'test'
+  try:
+    os.mkdir(out_dir)
+  except OSError:
+    pass
+
+  # remove old patches
+  for p in os.listdir(out_dir):
+    if p.endswith('.patch'):
+      os.remove(os.path.join(out_dir, p))
+
+  with open(os.path.join(out_dir, '.patches'), 'w') as pl:
+    for patch in patches:
+      filename = get_file_name(patch)
+      with open(os.path.join(out_dir, filename), 'w') as f:
+        f.write('\n'.join([l for l in patch.splitlines() if not l.startswith('Patch-Filename: ')]))
+      pl.write(filename + '\n')
+
+
+if __name__ == '__main__':
+  main()
