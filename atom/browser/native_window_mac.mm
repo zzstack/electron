@@ -727,7 +727,9 @@ enum {
   [self setQuickLookItem:[[[AtomPreviewItem alloc] initWithURL:url title:fileName] autorelease]];
   [[QLPreviewPanel sharedPreviewPanel] makeKeyAndOrderFront:nil];
 }
-
+void NativeWindowMac::MoveTop() {
+  [window_ orderWindow:NSWindowAbove relativeTo:0];
+}
 // Custom window button methods
 
 - (BOOL)windowShouldClose:(id)sender { return YES; }

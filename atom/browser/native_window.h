@@ -105,6 +105,9 @@ class NativeWindow : public base::SupportsUserData,
   virtual void SetContentSizeConstraints(
       const extensions::SizeConstraints& size_constraints);
   virtual extensions::SizeConstraints GetContentSizeConstraints() const;
+  #if defined(OS_WIN) || defined(OS_MACOSX)
+  virtual void MoveTop() = 0;
+  #endif
   virtual void SetMinimumSize(const gfx::Size& size);
   virtual gfx::Size GetMinimumSize() const;
   virtual void SetMaximumSize(const gfx::Size& size);
