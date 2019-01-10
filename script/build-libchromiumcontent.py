@@ -6,7 +6,7 @@ import sys
 
 from lib.config import enable_verbose_mode, get_target_arch
 from lib.util import execute_stdout
-from bootstrap import get_libchromiumcontent_commit 
+from bootstrap import get_libchromiumcontent_commit
 
 
 SOURCE_ROOT = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
@@ -45,7 +45,7 @@ def main():
   create_dist = os.path.join(script_dir, 'create-dist')
   if args.force_update or libchromiumcontent_outdated():
     execute_stdout([sys.executable, bootstrap])
-    execute_stdout([sys.executable, update, '-t', args.target_arch])
+    execute_stdout([sys.executable, update, '-t', args.target_arch, '--use-bundled-sccache'])
     update_gclient_done_marker()
   if args.debug:
     execute_stdout([sys.executable, build, '-D', '-t', args.target_arch])
