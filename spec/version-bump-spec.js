@@ -1,8 +1,15 @@
 const { expect } = require('chai')
+const { remote } = require('electron')
 const { nextVersion } = require('../script/bump-version')
 const utils = require('../script/lib/version-utils')
 
-describe('bump-version utils', () => {
+const isCi = remote.getGlobal('isCi')
+
+// On macOS Circle CI we don't have a real git environment due to running
+// gclient sync on a linux machine.  These tests therefore don't run as expected
+const describeFn = (isCi && process.platform === 'darwin') ? describe.skip : describe
+
+describeFn('bump-version utils', () => {
   it('makes a version with a period delimeter', () => {
     const components = {
       major: 2,
