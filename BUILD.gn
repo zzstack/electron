@@ -505,7 +505,7 @@ static_library("electron_lib") {
     include_dirs += [ "//third_party/breakpad" ]
   }
 
-  if (enable_pdf) {
+  if (enable_pdf_viewer) {
     deps += [ "//pdf" ]
   }
 

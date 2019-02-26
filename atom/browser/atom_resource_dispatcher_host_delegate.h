@@ -8,6 +8,7 @@
 #include <string>
 
 #include "content/public/browser/resource_dispatcher_host_delegate.h"
+#include "electron/buildflags/buildflags.h"
 
 namespace atom {
 
@@ -15,6 +16,7 @@ class AtomResourceDispatcherHostDelegate
     : public content::ResourceDispatcherHostDelegate {
  public:
   AtomResourceDispatcherHostDelegate();
+  ~AtomResourceDispatcherHostDelegate() override;
 
   // content::ResourceDispatcherHostDelegate:
   bool ShouldInterceptResourceAsStream(net::URLRequest* request,
@@ -22,8 +24,20 @@ class AtomResourceDispatcherHostDelegate
                                        GURL* origin,
                                        std::string* payload) override;
 
+  void OnStreamCreated(net::URLRequest* request,
+                       std::unique_ptr<content::StreamInfo> stream) override;
+
  private:
   DISALLOW_COPY_AND_ASSIGN(AtomResourceDispatcherHostDelegate);
+
+#if BUILDFLAG(ENABLE_PDF_VIEWER)
+  struct StreamTargetInfo {
+    std::string extension_id;
+    std::string view_id;
+  };
+
+  std::map<net::URLRequest*, StreamTargetInfo> stream_target_info_;
+#endif
 };
 
 }  // namespace atom
