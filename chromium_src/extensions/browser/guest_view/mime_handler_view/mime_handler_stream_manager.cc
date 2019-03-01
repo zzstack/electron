@@ -12,7 +12,6 @@
 #include "content/public/browser/render_frame_host.h"
 #include "content/public/browser/render_process_host.h"
 #include "content/public/browser/web_contents.h"
-#include "extensions/browser/extension_registry.h"
 #include "extensions/browser/extensions_browser_client.h"
 #include "extensions/browser/guest_view/mime_handler_view/mime_handler_view_guest.h"
 
@@ -30,8 +29,6 @@ class MimeHandlerStreamManagerFactory
   // BrowserContextKeyedServiceFactory overrides.
   KeyedService* BuildServiceInstanceFor(
       content::BrowserContext* profile) const override;
-  content::BrowserContext* GetBrowserContextToUse(
-      content::BrowserContext* context) const override;
 };
 
 MimeHandlerStreamManagerFactory::MimeHandlerStreamManagerFactory()
@@ -54,13 +51,6 @@ MimeHandlerStreamManager* MimeHandlerStreamManagerFactory::Get(
 KeyedService* MimeHandlerStreamManagerFactory::BuildServiceInstanceFor(
     content::BrowserContext* context) const {
   return new MimeHandlerStreamManager();
-}
-
-content::BrowserContext*
-MimeHandlerStreamManagerFactory::GetBrowserContextToUse(
-    content::BrowserContext* context) const {
-  return extensions::ExtensionsBrowserClient::Get()->GetOriginalContext(
-      context);
 }
 
 }  // namespace
@@ -109,8 +99,7 @@ class MimeHandlerStreamManager::EmbedderObserver
   content::RenderFrameHost* new_host_;
 };
 
-MimeHandlerStreamManager::MimeHandlerStreamManager()
-    : extension_registry_observer_(this) {}
+MimeHandlerStreamManager::MimeHandlerStreamManager() {}
 
 MimeHandlerStreamManager::~MimeHandlerStreamManager() {}
 
@@ -145,21 +134,6 @@ std::unique_ptr<StreamContainer> MimeHandlerStreamManager::ReleaseStream(
   streams_.erase(stream);
   embedder_observers_.erase(view_id);
   return result;
-}
-
-void MimeHandlerStreamManager::OnExtensionUnloaded(
-    content::BrowserContext* browser_context,
-    const Extension* extension,
-    UnloadedExtensionReason reason) {
-  auto streams = streams_by_extension_id_.find(extension->id());
-  if (streams == streams_by_extension_id_.end())
-    return;
-
-  for (const auto& view_id : streams->second) {
-    streams_.erase(view_id);
-    embedder_observers_.erase(view_id);
-  }
-  streams_by_extension_id_.erase(streams);
 }
 
 MimeHandlerStreamManager::EmbedderObserver::EmbedderObserver(
