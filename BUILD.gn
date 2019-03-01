@@ -506,7 +506,15 @@ static_library("electron_lib") {
   }
 
   if (enable_pdf_viewer) {
-    deps += [ "//pdf" ]
+    deps += [
+      "//components/guest_view/browser",
+      "//components/guest_view/common",
+      "//components/pdf/browser",
+      "//content/public/common:service_names",
+      "//extensions/common/api",
+      "//pdf",
+      "//services/service_manager/public/cpp",
+    ]
   }
 
   if (enable_run_as_node) {

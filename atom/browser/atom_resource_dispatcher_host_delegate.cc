@@ -23,6 +23,7 @@
 #include "base/strings/stringprintf.h"
 #include "content/public/browser/stream_info.h"
 #include "content/public/common/transferrable_url_loader.mojom.h"
+#include "extensions/browser/guest_view/mime_handler_view/mime_handler_view_guest.h"
 #include "net/url_request/url_request.h"
 #endif  // BUILDFLAG(ENABLE_PDF_VIEWER)
 
@@ -62,11 +63,11 @@ void OnPdfResourceIntercepted(
       GURL(base::StrCat({"chrome-extension://", extension_id})).spec() +
       "index.html");
   /* jkleinsc TODO
-  auto* browser_context = web_contents->GetBrowserContext();
   int tab_id = -1;
   std::unique_ptr<extensions::StreamContainer> stream_container(new
   extensions::StreamContainer( std::move(stream), tab_id, embedded, handler_url,
   extension_id, std::move(transferrable_loader), original_url));
+  auto* browser_context = web_contents->GetBrowserContext();
   extensions::MimeHandlerStreamManager::Get(browser_context)
       ->AddStream(view_id, std::move(stream_container), frame_tree_node_id,
                   render_process_id, render_frame_id);

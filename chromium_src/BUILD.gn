@@ -176,4 +176,19 @@ static_library("chrome") {
       ]
     }
   }
+
+  if (enable_pdf_viewer) {
+    sources += [
+      "//extensions/browser/api/mime_handler_private/mime_handler_private.cc",
+      "//extensions/browser/api/mime_handler_private/mime_handler_private.h",
+      "//extensions/browser/guest_view/mime_handler_view/mime_handler_stream_manager.cc",
+      "//extensions/browser/guest_view/mime_handler_view/mime_handler_stream_manager.h",
+      "//extensions/browser/guest_view/mime_handler_view/mime_handler_view_constants.cc",
+      "//extensions/browser/guest_view/mime_handler_view/mime_handler_view_constants.h",
+      "//extensions/browser/guest_view/mime_handler_view/mime_handler_view_guest_delegate.cc",
+      "//extensions/browser/guest_view/mime_handler_view/mime_handler_view_guest_delegate.h",
+      "//extensions/browser/view_type_utils.cc",
+      "//extensions/browser/view_type_utils.h",
+    ]
+  }
 }
