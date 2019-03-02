@@ -762,7 +762,7 @@ Returns:
 * `event` Event
 * `guestWebContents` [WebContents](web-contents.md)
 
-Emitted when `<webview>.getWebContents()` is called in the renderer process.
+Emitted when `remote.getGuestWebContents()` is called in the renderer process.
 Calling `event.preventDefault()` will prevent the object from being returned.
 Custom value can be returned by setting `event.returnValue`.
 
@@ -1317,11 +1317,13 @@ An example of showing devtools in a `<webview>` tag:
   <webview id="browser" src="https://github.com"></webview>
   <webview id="devtools"></webview>
   <script>
+    const { remote } = require('electron')
     const browserView = document.getElementById('browser')
     const devtoolsView = document.getElementById('devtools')
     browserView.addEventListener('dom-ready', () => {
-      const browser = browserView.getWebContents()
-      browser.setDevToolsWebContents(devtoolsView.getWebContents())
+      const browser = remote.getGuestWebContents(browserView.getGuestInstanceId())
+      const devtools = remote.getGuestWebContents(devtoolsView.getGuestInstanceId())
+      browser.setDevToolsWebContents(devtools)
       browser.openDevTools()
     })
   </script>

@@ -46,6 +46,10 @@ describe('<webview> tag', function () {
     return webview
   }
 
+  const getWebViewContents = function () {
+    return remote.getGuestWebContents(webview.getGuestInstanceId())
+  }
+
   const startLoadingWebViewAndWaitForMessage = async (webview, attributes = {}) => {
     loadWebView(webview, attributes) // Don't wait for load to be finished.
     const event = await waitForEvent(webview, 'console-message')
@@ -775,13 +779,14 @@ describe('<webview> tag', function () {
 
       loadWebView(webview, { src: 'about:blank' })
       await waitForEvent(webview, 'dom-ready')
-      webview.getWebContents().setDevToolsWebContents(webview2.getWebContents())
-      webview.getWebContents().openDevTools()
+      const contents = getWebViewContents()
+      const devtools = remote.getGuestWebContents(webview2.getGuestInstanceId())
+      contents.setDevToolsWebContents(devtools)
+      contents.openDevTools()
 
       await waitForDomReady
 
       // Its WebContents should be a DevTools.
-      const devtools = webview2.getWebContents()
       assert.ok(devtools.getURL().startsWith('chrome-devtools://devtools'))
 
       const name = await new Promise((resolve) => {
@@ -1110,7 +1115,7 @@ describe('<webview> tag', function () {
       assert.ok(webview.partition)
 
       const listener = function (webContents, permission, callback) {
-        if (webContents.id === webview.getWebContents().id) {
+        if (webContents.id === getWebViewContents().id) {
           // requestMIDIAccess with sysex requests both midi and midiSysex so
           // grant the first midi one and then reject the midiSysex one
           if (requestedPermission === 'midiSysex' && permission === 'midi') {
@@ -1196,7 +1201,7 @@ describe('<webview> tag', function () {
       webview.partition = 'permissionTest'
       webview.setAttribute('nodeintegration', 'on')
       session.fromPartition(webview.partition).setPermissionRequestHandler((webContents, permission, callback) => {
-        if (webContents.id === webview.getWebContents().id) {
+        if (webContents.id === remote.getGuestWebContents(webview.getGuestInstanceId()).id) {
           assert.strictEqual(permission, 'notifications')
           setTimeout(() => { callback(true) }, 10)
         }
@@ -1205,8 +1210,17 @@ describe('<webview> tag', function () {
     })
   })
 
+  describe('<webview>.getGuestInstanceId', () => {
+    it('can return the unique ID', async () => {
+      const src = 'about:blank'
+      await loadWebView(webview, { src })
+
+      expect(webview.getGuestInstanceId()).to.be.a('number').above(0)
+    })
+  })
+
   describe('<webview>.getWebContents', () => {
-    it('can return the webcontents associated', async () => {
+    it('can return the associated WebContents', async () => {
       const src = 'about:blank'
       await loadWebView(webview, { src })
 
@@ -1216,13 +1230,13 @@ describe('<webview> tag', function () {
     })
   })
 
-  describe('<webview>.getWebContents filtering', () => {
+  describe('remote.getGuestWebContents filtering', () => {
     it('can return custom value', async () => {
       const src = 'about:blank'
       await loadWebView(webview, { src })
 
       ipcRenderer.send('handle-next-remote-get-guest-web-contents', 'Hello World!')
-      expect(webview.getWebContents()).to.be.equal('Hello World!')
+      expect(getWebViewContents()).to.be.equal('Hello World!')
     })
 
     it('throws when no returnValue set', async () => {
@@ -1230,7 +1244,7 @@ describe('<webview> tag', function () {
       await loadWebView(webview, { src })
 
       ipcRenderer.send('handle-next-remote-get-guest-web-contents')
-      expect(() => webview.getWebContents()).to.throw('Blocked remote.getGuestForWebContents()')
+      expect(() => getWebViewContents()).to.throw('Blocked remote.getGuestForWebContents()')
     })
   })
 

@@ -6,10 +6,11 @@
   <body>
     <webview src="./a.html"/>
     <script>
-      var {ipcRenderer} = require('electron')
-      var wv = document.querySelector('webview')
+      const { ipcRenderer, remote } = require('electron')
+      const wv = document.querySelector('webview')
       wv.addEventListener('dom-ready', () => {
-        ipcRenderer.send('webview-dom-ready', wv.getWebContents().id)
+        const webContents = remote.getGuestWebContents(wv.getGuestInstanceId())
+        ipcRenderer.send('webview-dom-ready', webContents.id)
       })
     </script>
   </body>
