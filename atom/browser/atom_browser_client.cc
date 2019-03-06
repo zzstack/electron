@@ -778,7 +778,8 @@ void AtomBrowserClient::RenderProcessExited(
 void OnOpenExternal(const GURL& escaped_url, bool allowed) {
   if (allowed)
     platform_util::OpenExternal(
-        escaped_url, platform_util::OpenExternalOptions(), base::nullopt);
+        escaped_url, platform_util::OpenExternalOptions(),
+        base::BindOnce([](std::string msg) { return msg; }));
 }
 
 void HandleExternalProtocolInUI(

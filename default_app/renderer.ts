@@ -17,9 +17,9 @@ function initialize () {
     parsedUrl.query = { ...parsedUrl.query, utm_source: 'default_app' }
     const url = URL.format(parsedUrl)
 
-    const openLinkExternally = (e: Event) => {
+    const openLinkExternally = async (e: Event) => {
       e.preventDefault()
-      shell.openExternalSync(url)
+      await shell.openExternal(url)
     }
 
     link.addEventListener('click', openLinkExternally)
