@@ -27,12 +27,12 @@ void FreeNodeBufferData(char* data, void* hint) {
   delete[] data;
 }
 
-void RunCallbackInUI(const AtomBlobReader::CompletionCallback& callback,
-                     char* blob_data,
-                     int size) {
+void RunPromiseInUI(const atom::util::CopyablePromise& promise,
+                    char* blob_data,
+                    int size) {
   DCHECK_CURRENTLY_ON(BrowserThread::UI);
+  v8::Isolate* isolate = promise.GetPromise().isolate();
 
-  v8::Isolate* isolate = v8::Isolate::GetCurrent();
   v8::Locker locker(isolate);
   v8::HandleScope handle_scope(isolate);
   if (blob_data) {
@@ -40,9 +40,9 @@ void RunCallbackInUI(const AtomBlobReader::CompletionCallback& callback,
         node::Buffer::New(isolate, blob_data, static_cast<size_t>(size),
                           &FreeNodeBufferData, nullptr)
             .ToLocalChecked();
-    callback.Run(buffer);
+    promise.GetPromise().Resolve(buffer);
   } else {
-    callback.Run(v8::Null(isolate));
+    promise.GetPromise().RejectWithErrorMessage("Could not get blob data");
   }
 }
 
@@ -53,22 +53,21 @@ AtomBlobReader::AtomBlobReader(content::ChromeBlobStorageContext* blob_context)
 
 AtomBlobReader::~AtomBlobReader() {}
 
-void AtomBlobReader::StartReading(
-    const std::string& uuid,
-    const AtomBlobReader::CompletionCallback& completion_callback) {
+void AtomBlobReader::StartReading(const std::string& uuid,
+                                  atom::util::Promise promise) {
   DCHECK_CURRENTLY_ON(BrowserThread::IO);
 
   auto blob_data_handle = blob_context_->context()->GetBlobDataFromUUID(uuid);
-  auto callback = base::Bind(&RunCallbackInUI, completion_callback);
   if (!blob_data_handle) {
-    base::PostTaskWithTraits(FROM_HERE, {BrowserThread::UI},
-                             base::BindOnce(callback, nullptr, 0));
+    atom::util::Promise::RejectPromise(std::move(promise),
+                                       "Could not get blob data handle");
     return;
   }
 
   auto blob_reader = blob_data_handle->CreateReader();
-  BlobReadHelper* blob_read_helper =
-      new BlobReadHelper(std::move(blob_reader), callback);
+  BlobReadHelper* blob_read_helper = new BlobReadHelper(
+      std::move(blob_reader),
+      base::Bind(&RunPromiseInUI, atom::util::CopyablePromise(promise)));
   blob_read_helper->Read();
 }
 
