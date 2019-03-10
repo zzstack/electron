@@ -159,6 +159,8 @@ browserWindow.loadURL('https://example.com')
 
 ## 2) Disable Node.js Integration for Remote Content
 
+_Recommendation is Electron's default_
+
 It is paramount that you disable Node.js integration in any renderer
 ([`BrowserWindow`][browser-window], [`BrowserView`][browser-view], or
 [`<webview>`][webview-tag]) that loads remote content. The goal is to limit the
@@ -183,7 +185,13 @@ so-called "Remote Code Execution" (RCE) attack.
 
 ```js
 // Bad
-const mainWindow = new BrowserWindow()
+const mainWindow = new BrowserWindow({
+  webPreferences: {
+    nodeIntegration: true,
+    nodeIntegrationInWorker: true
+  }
+})
+
 mainWindow.loadURL('https://example.com')
 ```
 
@@ -191,8 +199,6 @@ mainWindow.loadURL('https://example.com')
 // Good
 const mainWindow = new BrowserWindow({
   webPreferences: {
-    nodeIntegration: false,
-    nodeIntegrationInWorker: false,
     preload: './preload.js'
   }
 })
