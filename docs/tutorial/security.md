@@ -709,6 +709,80 @@ const { shell } = require('electron')
 shell.openExternal('https://example.com/index.html')
 ```
 
+## 15) Disable the `remote` module
+
+### Why?
+
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam blandit augue ut felis egestas dictum a ullamcorper justo. Nulla facilisi. Phasellus ut nisi libero. Nulla nisl lacus, euismod finibus mauris at, feugiat faucibus ipsum. Duis vulputate tempus dui eu tempor. Nulla at rhoncus lacus. Aliquam ultrices augue ut mi dignissim scelerisque.
+
+### How?
+
+```js
+// Bad
+const mainWindow = new BrowserWindow({})
+```
+
+```js
+// Good
+const mainWindow = new BrowserWindow({
+  webPreferences: {
+    enableRemoteModule: false
+  }
+})
+```
+
+```html
+<!-- Bad -->
+<webview src="page.html"></webview>
+
+<!-- Good -->
+<webview enableremotemodule="false" src="page.html"></webview>
+```
+
+
+## 16) Filter the `remote` module
+
+### Why?
+
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam blandit augue ut felis egestas dictum a ullamcorper justo. Nulla facilisi. Phasellus ut nisi libero. Nulla nisl lacus, euismod finibus mauris at, feugiat faucibus ipsum. Duis vulputate tempus dui eu tempor. Nulla at rhoncus lacus. Aliquam ultrices augue ut mi dignissim scelerisque.
+
+### How?
+
+```js
+const allowedModules = new Set(['crypto'])
+const allowedElectronModules = new Set(['shell'])
+const allowedGlobals = new Set()
+
+app.on('remote-require', (event, webContents, moduleName) => {
+  if (!allowedModules.has(moduleName)) {
+    event.preventDefault()
+  }
+})
+
+app.on('remote-get-builtin', (event, webContents, moduleName) => {
+  if (!allowedElectronModules.has(moduleName)) {
+    event.preventDefault()
+  }
+})
+
+app.on('remote-get-global', (event, webContents, globalName) => {
+  if (!allowedGlobals.has(globalName)) {
+    event.preventDefault()
+  }
+})
+
+app.on('remote-get-current-window', (event, webContents) => {
+  event.preventDefault()
+})
+
+app.on('remote-get-current-web-contents', (event, webContents) => {
+  event.preventDefault()
+})
+
+app.on('remote-get-guest-web-contents', (event, webContents, guestWebContents) => {
+  event.preventDefault()
+})
+```
 
 [browser-window]: ../api/browser-window.md
 [browser-view]: ../api/browser-view.md
