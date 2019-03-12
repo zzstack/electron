@@ -180,11 +180,18 @@ class Browser : public WindowListObserver {
   // Set docks' icon.
   void DockSetIcon(const gfx::Image& image);
 
+  // show native color panel picker
+  void ShowColorPanel();
+
 #endif  // defined(OS_MACOSX)
 
 #if defined(OS_MACOSX) || defined(OS_LINUX)
   void ShowAboutPanel();
   void SetAboutPanelOptions(const base::DictionaryValue& options);
+#endif
+
+#if defined(OS_MACOSX) || defined(OS_WIN)
+  void ShowEmojiPanel();
 #endif
 
 #if defined(OS_WIN)

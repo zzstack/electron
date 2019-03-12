@@ -1348,12 +1348,18 @@ void App::BuildPrototype(v8::Isolate* isolate,
       // TODO(juturu): Remove in 2.0, deprecate before then with warnings
       .SetMethod("moveToApplicationsFolder", &App::MoveToApplicationsFolder)
       .SetMethod("isInApplicationsFolder", &App::IsInApplicationsFolder)
+      .SetMethod("showColorPanel",
+                 base::Bind(&Browser::ShowColorPanel, browser))
 #endif
 #if defined(OS_MACOSX) || defined(OS_LINUX)
       .SetMethod("setAboutPanelOptions",
                  base::Bind(&Browser::SetAboutPanelOptions, browser))
       .SetMethod("showAboutPanel",
                  base::Bind(&Browser::ShowAboutPanel, browser))
+#endif
+#if defined(OS_MACOSX) || defined(OS_WIN)
+      .SetMethod("showEmojiPanel",
+                 base::Bind(&Browser::ShowEmojiPanel, browser))
 #endif
 #if defined(OS_WIN)
       .SetMethod("setUserTasks", base::Bind(&Browser::SetUserTasks, browser))
