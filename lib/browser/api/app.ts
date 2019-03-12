@@ -19,11 +19,13 @@ Object.setPrototypeOf(App.prototype, EventEmitter.prototype)
 EventEmitter.call(app as any)
 
 Object.assign(app, {
-  setApplicationMenu (menu: Electron.Menu | null) {
-    return Menu.setApplicationMenu(menu)
-  },
-  getApplicationMenu () {
-    return Menu.getApplicationMenu()
+  applicationMenu: {
+    get () {
+      return Menu.getApplicationMenu()
+    },
+    set (menu: Electron.Menu | null) {
+      return Menu.setApplicationMenu(menu)
+    }
   },
   commandLine: {
     hasSwitch: (theSwitch: string) => commandLine.hasSwitch(String(theSwitch)),
