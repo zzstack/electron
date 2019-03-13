@@ -1063,24 +1063,6 @@ machineModelVersion: '11.5' }
 ```
 Using `basic` should be preferred if only basic information like `vendorId` or `driverId` is needed.
 
-### `app.setBadgeCount(count)` _Linux_ _macOS_
-
-* `count` Integer
-
-Returns `Boolean` - Whether the call succeeded.
-
-Sets the counter badge for current app. Setting the count to `0` will hide the
-badge.
-
-On macOS, it shows on the dock icon. On Linux, it only works for Unity launcher.
-
-**Note:** Unity launcher requires the existence of a `.desktop` file to work,
-for more information please read [Desktop Environment Integration][unity-requirement].
-
-### `app.getBadgeCount()` _Linux_ _macOS_
-
-Returns `Integer` - The current value displayed in the counter badge.
-
 ### `app.isUnityRunning()` _Linux_
 
 Returns `Boolean` - Whether the current desktop environment is Unity launcher.
@@ -1328,6 +1310,19 @@ Returns `Menu | null` - The application's [dock menu][dock-menu].
 Sets the `image` associated with this dock icon.
 
 ## Properties
+
+### `app.badgeCount` _Linux_ _macOS_
+
+An `Integer` property that returns the badge count for current app. Setting the count to `0` will hide the badge.
+
+On macOS, setting this with any nonzero integer shows on the dock icon. On Linux, this property only works for Unity launcher.
+
+**Note:** Unity launcher requires the existence of a `.desktop` file to work,
+for more information please read [Desktop Environment Integration][unity-requirement].
+
+### `app.getBadgeCount()` _Linux_ _macOS_
+
+Returns `Integer` - The current value displayed in the counter badge.
 
 ### `app.isPackaged`
 
