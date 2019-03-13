@@ -1147,21 +1147,6 @@ app.setLoginItemSettings({
 })
 ```
 
-### `app.isAccessibilitySupportEnabled()` _macOS_ _Windows_
-
-Returns `Boolean` - `true` if Chrome's accessibility support is enabled,
-`false` otherwise. This API will return `true` if the use of assistive
-technologies, such as screen readers, has been detected. See
-https://www.chromium.org/developers/design-documents/accessibility for more
-details.
-
-### `app.setAccessibilitySupportEnabled(enabled)` _macOS_ _Windows_
-
-* `enabled` Boolean - Enable or disable [accessibility tree](https://developers.google.com/web/fundamentals/accessibility/semantics-builtin/the-accessibility-tree) rendering
-
-Manually enables Chrome's accessibility support, allowing to expose accessibility switch to users in application settings. See [Chromium's accessibility docs](https://www.chromium.org/developers/design-documents/accessibility) for more
-details. Disabled by default.
-
 This API must be called after the `ready` event is emitted.
 
 **Note:** Rendering accessibility tree can significantly affect the performance of your app. It should not be enabled by default.
@@ -1328,6 +1313,12 @@ Returns `Menu | null` - The application's [dock menu][dock-menu].
 Sets the `image` associated with this dock icon.
 
 ## Properties
+
+### app.accessibilitySupport _macOS_ _Windows_
+
+This property is `true` if Chrome's accessibility support is enabled, `false` otherwise. This property will be `true` if the use of assistive technologies, such as screen readers, has been detected. Setting this property to `true` manually enables Chrome's accessibility support, allowing developers to expose accessibility switch to users in application settings.
+
+See [Chromium's accessibility docs](https://www.chromium.org/developers/design-documents/accessibility) for more details. Disabled by default.
 
 ### `app.isPackaged`
 

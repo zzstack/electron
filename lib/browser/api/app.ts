@@ -33,6 +33,14 @@ Object.assign(app, {
   } as Electron.CommandLine,
   enableMixedSandbox () {
     deprecate.log(`'enableMixedSandbox' is deprecated. Mixed-sandbox mode is now enabled by default. You can safely remove the call to enableMixedSandbox().`)
+  },
+  accessibilityEnabled: {
+    get () {
+      return app.isAccessibilitySupportEnabled()
+    },
+    set (enabled: boolean) {
+      app.setAccessibilitySupportEnabled(enabled)
+    }
   }
 })
 
